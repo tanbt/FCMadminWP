@@ -80,6 +80,8 @@ $table_prefix  = 'wp_';
 define('WP_DEBUG', false);
 
 /* That's all, stop editing! Happy blogging. */
+define('WP_POST_REVISIONS', false );
+define('JWT_AUTH_SECRET_KEY', 'myownsecretkey');
 
 /** Absolute path to the WordPress directory. */
 if ( !defined('ABSPATH') )
