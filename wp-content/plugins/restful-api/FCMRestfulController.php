@@ -28,16 +28,25 @@ class FCMRestfulController extends WP_REST_Controller {
      * Create one item from the collection
      *
      * @param WP_REST_Request $request Full data about the request.
-     * @return WP_Error|WP_REST_Request
+     * @return WP_REST_Response | WP_Error
      */
-    public function create_item( WP_REST_Request $request ) {
-        $item = $this->prepare_item_for_database( $request );
+    public function create_item( $request ) {
+        $post_id = wp_insert_post([
+            'post_title'    => 'device-' . (new DateTime())->getTimestamp(),
+            'post_content'  => $this->prepare_item_for_database( $request ),
+            'post_status'   => 'private',
+        ]);
 
-        return new WP_REST_Response( $item , 200 );
+        if ($post_id != 0) {
+            wp_set_post_categories($post_id, get_cat_ID('device'));
+            return new WP_REST_Response( ['Success'] , 200 );
+        } else {
+            return new WP_Error('Failed', 'Failed');
+        }
     }
 
     public function prepare_item_for_database($request) {
-        return ['device' => $request->get_param('device')];
+        return $request->get_param('device');
     }
 
     public function create_item_permissions_check($request)
