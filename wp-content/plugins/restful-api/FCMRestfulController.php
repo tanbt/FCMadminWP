@@ -32,8 +32,7 @@ class FCMRestfulController extends WP_REST_Controller {
      */
     public function create_item( $request ) {
         $post_id = wp_insert_post([
-            'post_title'    => 'device-' . (new DateTime())->getTimestamp(),
-            'post_content'  => $this->prepare_item_for_database( $request ),
+            'post_title'    => $this->prepare_item_for_database( $request ),
             'post_status'   => 'private',
         ]);
 
@@ -45,6 +44,10 @@ class FCMRestfulController extends WP_REST_Controller {
         }
     }
 
+    /**
+     * @param WP_REST_Request $request
+     * @return string
+     */
     public function prepare_item_for_database($request) {
         return $request->get_param('device');
     }
