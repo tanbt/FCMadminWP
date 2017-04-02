@@ -6,6 +6,24 @@ Author: Tan Bui
 Version: 1.0.0
 */
 
+function create_post_type() {
+    register_post_type( 'cyf_event',
+        array(
+            'labels' => array(
+                'name' => __( 'CYF Event' ),
+                'singular_name' => __( 'CYF Events' )
+            ),
+            'menu_icon'         => 'dashicons-format-image',
+            'public' => true,
+            'supports'          => array( 'title', 'editor', 'custom-fields'),
+            'has_archive' => true,
+            'rewrite' => array('slug' => 'cyf-event'),
+            'taxonomies' => array('category')
+        )
+    );
+}
+add_action('init', 'create_post_type');
+
 require "FCMRestfulController.php";
 
 $controller = new FCMRestfulController();
