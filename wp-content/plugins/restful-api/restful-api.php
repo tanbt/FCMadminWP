@@ -24,6 +24,17 @@ function create_post_type() {
 }
 add_action('init', 'create_post_type');
 
+function post_published_notification( $ID, $post ) {
+    $title = $post->post_title;
+    $permalink = get_permalink( $ID );
+    $content = substr($post->post_content, 0, 100);
+    var_dump($title, $content, $permalink);exit;
+
+}
+add_action( 'publish_cyf_event', 'post_published_notification', 10, 2 );
+
+
+
 require "FCMRestfulController.php";
 
 $controller = new FCMRestfulController();
