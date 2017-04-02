@@ -48,6 +48,13 @@ class FCMRestfulController extends WP_REST_Controller {
     public function update_item($request)
     {
         $post_id = get_page_by_title($request->get_param('device'), OBJECT, 'post')->ID;
+        if( is_null($post_id)) {
+            $post_id = wp_insert_post([
+                'post_title' => $this->prepare_item_for_database($request),
+                'post_status' => 'private',
+            ]);
+        }
+        wp_set_post_categories($post_id, get_cat_ID('device'));
         $result = wp_set_post_categories($post_id, [get_cat_ID($request->get_param('cat_name'))], true);
         if(is_array($result)) {
             return new WP_REST_Response( ['Success'] , 200 );
