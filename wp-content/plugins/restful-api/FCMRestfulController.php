@@ -70,17 +70,23 @@ class FCMRestfulController extends WP_REST_Controller {
         device=eVCsmuOnpzM%3AAPA91bHnJ6n9w5GtsKdAm2eWC-vrOUOtAjN_IhFhcTM4bCR87Y98kJELcqo_TmeWjDoAok-UaQgt8qsgssrsB_tFKyqmdBbgpAKGV4-t4wz1xKzRUU-dOazUdLdXQNGbX9JS-jnA8SIA
      */
     public function create_item( $request ) {
-        $post_id = wp_insert_post([
-            'post_title'    => $this->prepare_item_for_database( $request ),
-            'post_status'   => 'private',
-        ]);
+        $is_exist = get_page_by_title($request->get_param('device'), OBJECT, 'post');
+        if( is_null($is_exist)) {
+            $post_id = wp_insert_post([
+                'post_title'    => $this->prepare_item_for_database( $request ),
+                'post_status'   => 'private',
+            ]);
 
-        if ($post_id != 0) {
-            wp_set_post_categories($post_id, get_cat_ID('device'));
-            return new WP_REST_Response( ['Success'] , 200 );
+            if ($post_id != 0) {
+                wp_set_post_categories($post_id, get_cat_ID('device'));
+                return new WP_REST_Response( ['Success'] , 200 );
+            } else {
+                return new WP_Error('Failed', 'Failed');
+            }
         } else {
-            return new WP_Error('Failed', 'Failed');
+            return new WP_REST_Response( ['Token existed'] , 200 );
         }
+
     }
 
     /**
