@@ -17,11 +17,28 @@ class FCMNotificationSender
             "message" => substr($post->post_content, 0, 150),
             "link" => get_permalink( $ID ),
         ];
-        $tokens = 'e8RpR5_i2ys:APA91bEc1tvXrjPrHYJ5iA9HTcyCR7BtJwteNHlHUyxqSkne3YxFPCQql7-8C_b6DQ5-VHHAN7jw9kiXwMvLEigLBjVR3NlqiiOluKeGY_COBf4WRe_0t-YY5wkYQJ1qk6OdFABR7BxY';
+
+        $args = array(
+            'category'    => implode(",", $post->post_category) ,
+            'post_type'        => 'post',
+            'post_status'      => 'private',
+        );
+        $posts = get_posts( $args );
+        $tokens = [];
+        foreach ($posts as $p) {
+            $tokens[$p->ID] = $p->post_title;
+        }
+
         self::sendToMultipleDevices($tokens, $data);
     }
 
     public static function sendToMultipleDevices($tokens, $data) {
+        foreach ($tokens as $id=>$title) {
+            self::sendToOneDevice($title, $data);
+        }
+    }
+
+    public static function sendToOneDevice($token, $data) {
         if (empty($data['title'])) {
             throw new Exception("Your data array must include 'title'");
         } else if(empty($data['message'])) {
@@ -30,7 +47,7 @@ class FCMNotificationSender
             throw new Exception("Your data array must include 'link'");
         }
         $message = [
-            'to'    => $tokens,
+            'to'    => $token,
             'data' => $data
         ];
         return self::pushNotification($message);
