@@ -53,8 +53,8 @@ class FCMRestfulController extends WP_REST_Controller {
                 'post_title' => $this->prepare_item_for_database($request),
                 'post_status' => 'private',
             ]);
+            wp_set_post_categories($post_id, get_cat_ID('device'));
         }
-        wp_set_post_categories($post_id, get_cat_ID('device'));
         $result = wp_set_post_categories($post_id, [get_cat_ID($request->get_param('cat_name'))], true);
         if(is_array($result)) {
             return new WP_REST_Response( ['Success'] , 200 );
