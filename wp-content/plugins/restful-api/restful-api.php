@@ -43,7 +43,7 @@ function prefix_get_endpoint_phrase() {
 
 /**
  * This function is where we register our routes for our example endpoint.
- * /wp-json/api/v1/test
+ * http://domain/wp-json/api/v1/test
  */
 function prefix_register_example_routes() {
     // register_rest_route() handles more arguments but we are going to stick to the basics for now.
